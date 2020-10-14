@@ -32,3 +32,20 @@ float MathMatrix::at(size_t x, size_t y) const
 {
     return matrix_data[x][y];
 }
+
+MathMatrix MathMatrix::operator*(const MathMatrix &one)
+{
+    if (getWidth() != one.getHeight())throw std::exception();
+    MathMatrix result(getHeight(), one.getWidth());
+    for (int i = 0; i < getHeight(); i++)
+    {
+        for (int j = 0; j < one.getWidth(); j++)
+        {
+            for (int k = 0; k < getWidth(); k++)
+            {
+                result.matrix_data[i][j] += matrix_data[i][k] * one.matrix_data[k][j];
+            }
+        }
+    }
+    return result;
+}

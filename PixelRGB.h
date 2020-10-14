@@ -21,6 +21,7 @@ private:
     uint8_t Blue;
 
     friend class PictureStream;
+    friend class PixelMatrix;
 };
 
 

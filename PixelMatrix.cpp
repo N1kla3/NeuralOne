@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <iostream>
 #include "PixelMatrix.h"
 #include "PixelRGB.h"
 
@@ -139,8 +140,31 @@ void PixelMatrix::changeSize(uint32_t height, uint32_t width)
 {
     HEIGHT = height;
     WIDTH = width;
-    pixels.resize(height, std::vector<PixelRGB>(width));
+    pixels = matrix(height, std::vector<PixelRGB>(width));
     int32_t h = height * (-1);
     std::memcpy(&header[18], (char*)&WIDTH, sizeof(WIDTH));
     std::memcpy(&header[22], (char*)&h, sizeof(h));
+    std::cout << *reinterpret_cast<uint32_t *>(&header[18]) <<
+    *reinterpret_cast<int32_t *>(&header[22]);
+}
+
+std::vector<std::vector<float>> PixelMatrix::MathMatrixFromPart(const PartPixelMatrix& matr)
+{
+    std::vector<float> res_vector;
+    for (const auto& row : matr.mx)
+    {
+        for (auto column : row)
+        {
+            res_vector.push_back((float)column.Red/255);
+            res_vector.push_back((float)column.Green/255);
+            res_vector.push_back((float)column.Blue/255);
+        }
+    }
+    return std::vector<std::vector<float>>(1, res_vector);
+}
+
+void PixelMatrix::ChangePartFromMathM(PartPixelMatrix &matr, const MathMatrix &math)
+{
+    //TODO: generate back
+
 }

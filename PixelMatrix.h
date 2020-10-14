@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <vector>
 #include "PixelRGB.h"
-
+#include "MathMatrix.h"
 
 
 struct PartPixelMatrix
@@ -35,6 +35,10 @@ class PixelMatrix
     using matrix = std::vector<std::vector<PixelRGB>>;
 public:
     PixelMatrix(PixelMatrix &&moveMatrix) noexcept;
+
+    static std::vector<std::vector<float>> MathMatrixFromPart(const PartPixelMatrix& matr);
+
+    static void ChangePartFromMathM(PartPixelMatrix& matr, const MathMatrix& math);
 
     std::vector<PartPixelMatrix> matrixDecomposition(int sub_width, int sub_height);
 
