@@ -15,6 +15,8 @@ public:
 
     PixelRGB(uint8_t Red, uint8_t Green, uint8_t Blue);
 
+    static const int MAX_COLOR = 255;
+    static const int MIN_COLOR = 0;
 private:
     uint8_t Red;
     uint8_t Green;

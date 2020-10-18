@@ -155,16 +155,34 @@ std::vector<std::vector<float>> PixelMatrix::MathMatrixFromPart(const PartPixelM
     {
         for (auto column : row)
         {
-            res_vector.push_back((float)column.Red/255);
-            res_vector.push_back((float)column.Green/255);
-            res_vector.push_back((float)column.Blue/255);
+            res_vector.push_back(((float)(2*column.Red)/PixelRGB::MAX_COLOR)-1);
+            res_vector.push_back(((float)(2*column.Green)/PixelRGB::MAX_COLOR)-1);
+            res_vector.push_back(((float)(2*column.Blue)/PixelRGB::MAX_COLOR)-1);
         }
     }
     return std::vector<std::vector<float>>(1, res_vector);
 }
 
+uint8_t constructColor(float color)
+{
+    auto raw_res = PixelRGB::MAX_COLOR * (color + 1) / 2;
+    raw_res = raw_res > PixelRGB::MAX_COLOR ? PixelRGB::MAX_COLOR : raw_res;
+    raw_res = raw_res < PixelRGB::MIN_COLOR ? PixelRGB::MIN_COLOR : raw_res;
+    return static_cast<uint8_t>(raw_res);
+}
+
 void PixelMatrix::ChangePartFromMathM(PartPixelMatrix &matr, const MathMatrix &math)
 {
     //TODO: generate back
-
+    int counter = 0;
+    for (int y = 0; y < matr.mx.size(); y++)
+    {
+        for (int x = 0; x < matr.mx[0].size(); ++x)
+        {
+            auto red = math.at(counter++, 0);
+            auto green = math.at(counter++, 0);
+            auto blue = math.at(counter++, 0);
+            matr.mx[y][x] = PixelRGB(constructColor(red), constructColor(green), constructColor(blue));
+        }
+    }
 }
