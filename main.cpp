@@ -3,9 +3,9 @@
 
 int main() {
     PixelMatrix a(std::move(PictureStream::ReadFromBMP("../neuron.bmp")));
-    auto parts = a.matrixDecomposition(11, 11);
+    auto parts = a.matrixDecomposition(7, 6);
 
-    NeuralNet net(5, 0.1f);
+    NeuralNet net(15, 0.1f);
     net.start(parts);
 
     a.createFromParts(parts);

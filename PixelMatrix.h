@@ -50,7 +50,7 @@ private:
             HEIGHT(height),
             WIDTH(width)
     {
-        pixels.resize(HEIGHT, std::vector<PixelRGB>(WIDTH));
+        pixels.resize(abs(HEIGHT), std::vector<PixelRGB>(WIDTH));
     }
     bool isCompletlyCreated() const noexcept;
 
@@ -58,12 +58,12 @@ private:
     void writeMatrixAtLocation(int xLocation, int yLocation, PartPixelMatrix &part);
 
     void addPixel(const PixelRGB &pixel);
-    void changeSize(uint32_t height, uint32_t width);
+    void changeSize(int32_t height, uint32_t width);
 
     std::vector<char> header;
     std::vector<char> offset;
     matrix pixels;
-    uint32_t HEIGHT;
+    int32_t HEIGHT;
     uint32_t WIDTH;
     uint32_t curHeight = 0;
     uint32_t curWidth = 0;

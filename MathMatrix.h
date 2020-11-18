@@ -30,6 +30,10 @@ public:
             }
         }
     }
+    MathMatrix(size_t height, size_t width, int flag)
+    {
+        matrix_data = std::vector<std::vector<float>>(height, std::vector<float>(width, 0));
+    }
     explicit MathMatrix(std::vector<std::vector<float>>  create_from):
             matrix_data(std::move(create_from))
     {

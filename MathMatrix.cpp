@@ -7,7 +7,7 @@
 MathMatrix MathMatrix::MatrixTransposition(const MathMatrix &matrix)
 {
     if (matrix.getWidth() == 0 || matrix.getHeight() == 0)throw std::exception();
-    MathMatrix result(matrix.getWidth(), matrix.getHeight());
+    MathMatrix result(matrix.getWidth(), matrix.getHeight(), 0);
     for (int y = 0; y < matrix.getHeight(); ++y)
     {
         for (int x = 0; x < matrix.getWidth(); ++x)
@@ -36,7 +36,7 @@ float MathMatrix::at(size_t x, size_t y) const
 MathMatrix operator*(const MathMatrix &one, const MathMatrix& two)
 {
     if (one.getWidth() != two.getHeight())throw std::exception();
-    MathMatrix result(one.getHeight(), two.getWidth());
+    MathMatrix result(one.getHeight(), two.getWidth(), 0);
     for (int i = 0; i < one.getHeight(); i++)
     {
         for (int j = 0; j < two.getWidth(); j++)

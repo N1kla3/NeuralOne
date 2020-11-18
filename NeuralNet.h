@@ -19,7 +19,7 @@ public:
     }
     NeuralNet operator=(const NeuralNet& one) = delete;
     void start(std::vector<PartPixelMatrix> &parts);
-    void trainNeuron(const MathMatrix& X);
+    float trainNeuron(const MathMatrix& X);
 private:
     void trainW(float alpha, const MathMatrix &X, const MathMatrix &deltaX);
     void trainHatchW(float alphaHatch, const MathMatrix &Y, const MathMatrix &deltaX);

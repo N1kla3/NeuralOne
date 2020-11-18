@@ -23,7 +23,7 @@ PixelMatrix PictureStream::ReadFromBMP(const std::string &Path)
     auto fileSize = *reinterpret_cast<uint32_t *>(&header[2]);
     auto dataOffset = *reinterpret_cast<uint32_t *>(&header[10]);
     auto width = *reinterpret_cast<uint32_t *>(&header[18]);
-    auto height = abs(*reinterpret_cast<int32_t *>(&header[22]));
+    auto height = *reinterpret_cast<int32_t *>(&header[22]);
     auto bitPerPixel = *reinterpret_cast<uint16_t *>(&header[28]);
 
     if (bitPerPixel != 32)throw std::ifstream::failure("incorrect bit count");
@@ -40,7 +40,7 @@ PixelMatrix PictureStream::ReadFromBMP(const std::string &Path)
     bmp.close();
 
     int pixels = 0;
-    for (int i = (int)(fileSize - dataOffset) - 4; i >= 0; i -= 4)
+    for (int i = (int) (fileSize - dataOffset) - 4; i >= 0; i -= 4)
     {
         uint8_t red = image.at(i);
         uint8_t green = image.at(i + 1);
@@ -60,9 +60,10 @@ void PictureStream::WriteToBMP(const PixelMatrix &pixelMatrix)
         bmp.write(pixelMatrix.header.data(), pixelMatrix.header.size());
         bmp.write(pixelMatrix.offset.data(), pixelMatrix.offset.size());
         constexpr uint8_t blank = 255;
-        for (auto row = pixelMatrix.pixels.rbegin(); row != pixelMatrix.pixels.rend(); row++)
+
+        for (auto row = pixelMatrix.pixels.crbegin(); row != pixelMatrix.pixels.crend(); row++)
         {
-            for (auto col = (*row).rbegin(); col != (*row).rend(); col++)
+            for (auto col = (*row).crbegin(); col != (*row).crend(); col++)
             {
                 bmp.write((char *) &(*col).Red, 1);
                 bmp.write((char *) &(*col).Green, 1);

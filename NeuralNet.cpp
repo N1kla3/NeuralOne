@@ -4,47 +4,54 @@
 
 #include "NeuralNet.h"
 
-void NeuralNet::start(std::vector<PartPixelMatrix>& parts)
+void NeuralNet::start(std::vector<PartPixelMatrix> &parts)
 {
     W = MathMatrix(PixelMatrix::MathMatrixFromPart(parts[0])[0].size(), neuron_count);
     hatchW = MathMatrix(std::move(MathMatrix::MatrixTransposition(W)));
-    std::vector<MathMatrix> Q;
-    for (const auto& part : parts)
+    auto test = W * hatchW;
+    std::vector<MathMatrix> Q(parts.size());
+    for (int i = 0; i < 2; ++i)
     {
-        MathMatrix q(PixelMatrix::MathMatrixFromPart(part));
-        Q.push_back(q);
-        trainNeuron(q);
+        float E = 0;
+        for (size_t parts_index = 0; parts_index < parts.size(); parts_index++)
+        {
+            MathMatrix q(PixelMatrix::MathMatrixFromPart(parts[parts_index]));
+            E += trainNeuron(q);
+            Q[parts_index] = q;
+        }
+        std::cout << "\n"<< E ;
     }
+
     for (int i = 0; i < Q.size(); ++i)
     {
         auto Y = Q[i] * W;
         auto hatchX = Y * hatchW;
-        PixelMatrix::ChangePartFromMathM(parts[i], Q[i]);
+        PixelMatrix::ChangePartFromMathM(parts[i], hatchX);
     }
+    auto minipart = PixelMatrix::MathMatrixFromPart(parts[0]);
+    float N = minipart[0].size();
+    float Z = (parts.size() * N)/((N + parts.size())*(float)neuron_count+2);
+    std::cout << "\n" << Z << "\n";
 }
 
-void NeuralNet::trainNeuron(const MathMatrix &X)
+float NeuralNet::trainNeuron(const MathMatrix &X)
 {
     auto Y = X * W;
     auto hatchX = Y * hatchW;
     auto deltaX = hatchX - X;
-    auto E = calculateE(deltaX);
-    while (E > e)
-    {
-        Y = X * W;
-        hatchX = Y * hatchW;
-        deltaX = hatchX - X;
-        auto alphaHatch = 1 / ((Y * MathMatrix::MatrixTransposition(Y)).at(0,0));
-        auto alpha = 1 / ((X * MathMatrix::MatrixTransposition(X)).at(0,0));
-        trainW(alpha, X, deltaX);
-        trainHatchW(alphaHatch, Y, deltaX);
-    }
-
+    auto alpha = 0.0001f;
+    auto alphaHatch = alpha;
+    //auto alphaHatch = 1 / ((Y * MathMatrix::MatrixTransposition(Y)).at(0,0));
+    //auto alpha = 1 / ((X * MathMatrix::MatrixTransposition(X)).at(0,0));
+    trainW(alpha, X, deltaX);
+    trainHatchW(alphaHatch, Y, deltaX);
+    return calculateE(deltaX);
 }
 
 void NeuralNet::trainW(float alpha, const MathMatrix &X, const MathMatrix &deltaX)
 {
-    W = W - (alpha * MathMatrix::MatrixTransposition(X) * deltaX * MathMatrix::MatrixTransposition(hatchW));
+    auto w_plus = (alpha * MathMatrix::MatrixTransposition(X) * deltaX * MathMatrix::MatrixTransposition(hatchW));
+    W = W - w_plus;
 }
 
 void NeuralNet::trainHatchW(float alphaHatch, const MathMatrix &Y, const MathMatrix &deltaX)

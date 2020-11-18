@@ -34,7 +34,7 @@ void PixelMatrix::addPixel(const PixelRGB &pixel)
         curWidth = 0;
         curHeight++;
     }
-    if (curHeight >= HEIGHT)
+    if (curHeight >= abs(HEIGHT))
     {
         isComplete = true;
         return;
@@ -51,13 +51,13 @@ bool PixelMatrix::isCompletlyCreated() const noexcept
 std::vector<PartPixelMatrix> PixelMatrix::matrixDecomposition(const int sub_width, const int sub_height)
 {
     std::vector<PartPixelMatrix> result;
-    if (sub_width > WIDTH || sub_height > HEIGHT)return result;
+    if (sub_width > WIDTH || sub_height > abs(HEIGHT))return result;
 
     size_t y_number = 0;
-    for (size_t y = 0; y < HEIGHT; y += sub_height)
+    for (size_t y = 0; y < abs(HEIGHT); y += sub_height)
     {
         y_number++;
-        auto y_free_space = HEIGHT - y;
+        auto y_free_space = abs(HEIGHT)- y;
         auto y_loc = y;
         if (y_free_space < sub_height)
         {
@@ -112,10 +112,11 @@ void PixelMatrix::createFromParts(std::vector<PartPixelMatrix> &parts)
     uint32_t new_width = parts[parts.size()-1].x_number * parts_width;
     uint32_t new_height = parts[parts.size()-1].y_number * parts_height;
 
+    if (HEIGHT < 0) new_height = -new_height;
     changeSize(new_height, new_width);
 
     size_t part_counter = 0;
-    for (size_t start_y = 0; start_y < HEIGHT; start_y += parts_height)
+    for (size_t start_y = 0; start_y < abs(HEIGHT); start_y += parts_height)
     {
         for (size_t start_x = 0; start_x < WIDTH; start_x += parts_width)
         {
@@ -136,14 +137,13 @@ void PixelMatrix::writeMatrixAtLocation(const int xLocation, const int yLocation
     }
 }
 
-void PixelMatrix::changeSize(uint32_t height, uint32_t width)
+void PixelMatrix::changeSize(int32_t height, uint32_t width)
 {
     HEIGHT = height;
     WIDTH = width;
-    pixels = matrix(height, std::vector<PixelRGB>(width));
-    int32_t h = height * (-1);
+    pixels = matrix(abs(HEIGHT), std::vector<PixelRGB>(WIDTH));
     std::memcpy(&header[18], (char*)&WIDTH, sizeof(WIDTH));
-    std::memcpy(&header[22], (char*)&h, sizeof(h));
+    std::memcpy(&header[22], (char*)&HEIGHT, sizeof(HEIGHT));
     std::cout << *reinterpret_cast<uint32_t *>(&header[18]) <<
     *reinterpret_cast<int32_t *>(&header[22]);
 }
