@@ -2,10 +2,10 @@
 #include "NeuralNet.h"
 
 int main() {
-    PixelMatrix a(std::move(PictureStream::ReadFromBMP("../neuron.bmp")));
-    auto parts = a.matrixDecomposition(7, 6);
+    PixelMatrix a(std::move(PictureStream::ReadFromBMP("../dd.bmp")));
+    auto parts = a.matrixDecomposition(9, 8);
 
-    NeuralNet net(15, 0.1f);
+    NeuralNet net(22, 1111.f);
     net.start(parts);
 
     a.createFromParts(parts);

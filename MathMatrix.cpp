@@ -79,3 +79,41 @@ MathMatrix operator*(float one, const MathMatrix &two)
     }
     return res;
 }
+
+void MathMatrix::print() const
+{
+    for (const auto& y : matrix_data)
+    {
+        for (auto x : y)
+        {
+            std::cout << x << " ";
+        }
+        std::cout << "\n";
+    }
+}
+
+float MathMatrix::vectorModule(int vectorIndex) const
+{
+    if (matrix_data.size() <= vectorIndex)
+    {
+        return 1.f;
+    }
+    float answer = 0.f;
+    for (auto num : matrix_data[vectorIndex])
+    {
+        answer += num*num;
+    }
+    return std::sqrt(answer);
+}
+
+void MathMatrix::doNormal()
+{
+    auto tr = MathMatrix::MatrixTransposition(*this);
+    for (auto & i : matrix_data)
+    {
+        for (int j = 0; j < matrix_data[0].size(); ++j)
+        {
+            i[j] /= tr.vectorModule(j);
+        }
+    }
+}

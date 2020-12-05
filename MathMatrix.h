@@ -40,11 +40,15 @@ public:
 
     }
     static MathMatrix MatrixTransposition(const MathMatrix& matrix);
+    [[nodiscard]]float vectorModule(int vectorIndex)const;
+    void doNormal();
 
     size_t getHeight()const;
     size_t getWidth()const;
 
     float at(size_t x, size_t y)const;
+
+    void print()const;
 
     friend MathMatrix operator*(const MathMatrix& one, const MathMatrix& two);
     friend MathMatrix operator*(float one, const MathMatrix& two);
