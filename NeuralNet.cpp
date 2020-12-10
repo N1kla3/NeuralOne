@@ -26,7 +26,7 @@ void NeuralNet::start(std::vector<PartPixelMatrix> &parts)
             E += trainNeuron(q);
             Q[parts_index] = q;
         }
-        std::cout << "\n"<< E ;
+        std::cout << "\n"<< E << " - " << epoch*parts.size() ;
         epoch++;
         result = E;
     }
@@ -51,8 +51,8 @@ float NeuralNet::trainNeuron(const MathMatrix &X)
     auto deltaX = hatchX - X;
     //auto alpha = 0.0003f;
     //auto alphaHatch = alpha;
-    auto alphaHatch = 1 / (Y * MathMatrix::MatrixTransposition(Y)).at(0,0)/44;
-    auto alpha = 1 / (X * MathMatrix::MatrixTransposition(X)).at(0,0)/44;
+    auto alphaHatch = 1 / (Y * MathMatrix::MatrixTransposition(Y)).at(0,0)/30;
+    auto alpha = 1 / (X * MathMatrix::MatrixTransposition(X)).at(0,0)/30;
     trainW(alpha, X, deltaX);
     trainHatchW(alphaHatch, Y, deltaX);
     return calculateE(deltaX);
